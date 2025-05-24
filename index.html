@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程资源中心</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #6b8cae;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-color: #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .tab:hover:not(.active) {
+            background-color: #f1f1f1;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 5px 5px 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-height: 300px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: #f8f9fa;
+        }
+        
+        .upload-area.highlight {
+            border-color: var(--success);
+            background-color: #e8f5e9;
+        }
+        
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+        
+        .btn:hover {
+            background-color: #3a5a80;
+            transform: translateY(-2px);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .resource-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .resource-thumbnail {
+            height: 150px;
+            background-color: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--secondary);
+        }
+        
+        .resource-info {
+            padding: 15px;
+        }
+        
+        .resource-title {
+            margin: 0 0 10px 0;
+            font-size: 1.1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .resource-meta {
+            font-size: 0.8rem;
+            color: #666;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .iframe-container {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .sync-status {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>课程资源中心</h1>
+            <p class="subtitle">整合所有课程资料于一处</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="webpages">网页项目</div>
+            <div class="tab" data-tab="documents">课程文档</div>
+            <div class="tab" data-tab="media">图片视频</div>
+            <div class="tab" data-tab="links">重要链接</div>
+        </div>
+        
+        <div id="webpages" class="tab-content active">
+            <h2>网页项目展示</h2>
+            <p>在这里展示你的三个网页项目</p>
+            
+            <div class="resource-grid" id="webpageGrid">
+                <!-- 动态添加网页项目 -->
+            </div>
+            
+            <div class="upload-area" id="webpageUpload">
+                <h3>添加网页项目</h3>
+                <p>拖放网页文件夹到这里或点击上传</p>
+                <input type="file" id="webpageInput" webkitdirectory directory multiple class="hidden">
+                <button class="btn" onclick="document.getElementById('webpageInput').click()">选择文件夹</button>
+            </div>
+        </div>
+        
+        <div id="documents" class="tab-content">
+            <h2>课程文档</h2>
+            <p>上传和查看课程相关的PDF、Word等文档</p>
+            
+            <div class="resource-grid" id="documentGrid">
+                <!-- 动态添加文档 -->
+            </div>
+            
+            <div class="upload-area" id="documentUpload">
+                <h3>上传文档</h3>
+                <p>拖放文件到这里或点击上传</p>
+                <input type="file" id="documentInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" multiple class="hidden">
+                <button class="btn" onclick="document.getElementById('documentInput').click()">选择文件</button>
+            </div>
+        </div>
+        
+        <div id="media" class="tab-content">
+            <h2>图片与视频</h2>
+            <p>上传和查看课程相关的图片和视频</p>
+            
+            <div class="resource-grid" id="mediaGrid">
+                <!-- 动态添加媒体 -->
+            </div>
+            
+            <div class="upload-area" id="mediaUpload">
+                <h3>上传媒体文件</h3>
+                <p>拖放图片或视频到这里或点击上传</p>
+                <input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden">
+                <button class="btn" onclick="document.getElementById('mediaInput').click()">选择文件</button>
+            </div>
+        </div>
+        
+        <div id="links" class="tab-content">
+            <h2>重要链接</h2>
+            <p>保存和访问课程相关的重要链接</p>
+            
+            <div class="resource-grid" id="linkGrid">
+                <!-- 动态添加链接 -->
+            </div>
+            
+            <div class="upload-area" id="linkUpload" style="cursor: auto;">
+                <h3>添加新链接</h3>
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="linkTitle" placeholder="链接标题" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="url" id="linkUrl" placeholder="https://example.com" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                <button class="btn" id="addLinkBtn">添加链接</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="syncStatus" class="sync-status hidden">
+        <div class="loading"></div>
+        <span>正在同步...</span>
+    </div>
+    
+    <footer>
+        <p>© 2023 课程资源中心 | 所有资料集中管理</p>
+    </footer>
+
+    <script>
+        // ==================== 配置部分 ====================
+        // 替换为你的GitHub信息
+        const GITHUB_USERNAME = "ThisisPeggy";  // 你的GitHub用户名
+        const GITHUB_REPO = "my-resource-center";           // 你的仓库名
+        const GITHUB_TOKEN = "";       // 你的GitHub个人访问令牌
+        const DATA_FILE = "resource-data.json";         // 数据文件名
+        
+        // ==================== 数据对象 ====================
+        let resources = {
+            webpages: [],
+            documents: [],
+            media: [],
+            links: []
+        };
+        
+        // ==================== GitHub同步功能 ====================
+        // 显示同步状态
+        function showSyncStatus(message) {
+            const status = document.getElementById('syncStatus');
+            status.classList.remove('hidden');
+            status.querySelector('span').textContent = message;
+        }
+        
+        // 隐藏同步状态
+        function hideSyncStatus() {
+            document.getElementById('syncStatus').classList.add('hidden');
+        }
+        
+        // 保存数据到GitHub
+        async function saveToGitHub() {
+            showSyncStatus('正在保存到GitHub...');
+            try {
+                // 1. 先尝试获取文件SHA（用于更新现有文件）
+                let sha = null;
+                try {
+                    const shaResponse = await fetch(
+                        `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${DATA_FILE}`,
+                        {
+                            headers: {
+                                "Authorization": `token ${GITHUB_TOKEN}`,
+                                "Accept": "application/vnd.github.v3+json"
+                            }
+                        }
+                    );
+                    if (shaResponse.ok) {
+                        const data = await shaResponse.json();
+                        sha = data.sha;
+                    }
+                } catch (e) {
+                    console.log("文件不存在，将创建新文件");
+                }
+        
+                // 2. 创建或更新文件
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${DATA_FILE}`,
+                    {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `token ${GITHUB_TOKEN}`,
+                            "Content-Type": "application/json",
+                            "Accept": "application/vnd.github.v3+json"
+                        },
+                        body: JSON.stringify({
+                            message: "更新资源数据 - " + new Date().toLocaleString(),
+                            content: btoa(unescape(encodeURIComponent(JSON.stringify(resources)))),
+                            sha: sha
+                        })
+                    }
+                );
+                
+                if (!response.ok) {
+                    throw new Error("保存失败: " + response.status);
+                }
+                
+                console.log("数据保存成功");
+                hideSyncStatus();
+                return await response.json();
+            } catch (error) {
+                console.error("保存到GitHub失败:", error);
+                showSyncStatus('同步失败: ' + error.message);
+                setTimeout(hideSyncStatus, 3000);
+                throw error;
+            }
+        }
+        
+        // 从GitHub加载数据
+        async function loadFromGitHub() {
+            showSyncStatus('正在从GitHub加载...');
+            try {
+                const response = await fetch(
+                    `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${DATA_FILE}`,
+                    {
+                        headers: {
+                            "Authorization": `token ${GITHUB_TOKEN}`,
+                            "Accept": "application/vnd.github.v3+json"
+                        }
+                    }
+                );
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.log("数据文件不存在，将创建新文件");
+                        hideSyncStatus();
+                        return; // 首次使用时文件不存在是正常的
+                    }
+                    throw new Error("加载失败: " + response.status);
+                }
+                
+                const data = await response.json();
+                // GitHub返回的内容是Base64编码的
+                const decodedData = decodeURIComponent(escape(atob(data.content)));
+                resources = JSON.parse(decodedData);
+                renderResources();
+                console.log("数据加载成功");
+                hideSyncStatus();
+            } catch (error) {
+                console.error("从GitHub加载失败:", error);
+                showSyncStatus('加载失败: ' + error.message);
+                setTimeout(hideSyncStatus, 3000);
+            }
+        }
+        
+        // ==================== 资源管理功能 ====================
+        // 渲染所有资源
+        function renderResources() {
+            renderResourceGrid('webpageGrid', resources.webpages);
+            renderResourceGrid('documentGrid', resources.documents);
+            renderResourceGrid('mediaGrid', resources.media);
+            renderResourceGrid('linkGrid', resources.links);
+        }
+        
+        // 渲染资源网格
+        function renderResourceGrid(gridId, items) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = '';
+            items.forEach(item => {
+                addResourceToGrid(item, gridId);
+            });
+        }
+        
+        // 添加资源到网格
+        function addResourceToGrid(resource, gridId) {
+            const grid = document.getElementById(gridId);
+            const card = document.createElement('div');
+            card.className = 'resource-card';
+            card.dataset.id = resource.id;
+            
+            let thumbnailContent = '';
+            let metaContent = '';
+            let clickAction = '';
+            
+            switch(resource.type) {
+                case 'webpage':
+                    thumbnailContent = `<div class="resource-thumbnail">📄</div>`;
+                    metaContent = `<span>网页</span><span>${resource.date}</span>`;
+                    clickAction = `viewWebpage('${resource.id}')`;
+                    break;
+                case 'document':
+                    const docIcon = getFileIcon(resource.fileType);
+                    thumbnailContent = `<div class="resource-thumbnail">${docIcon}</div>`;
+                    metaContent = `<span>${resource.fileType.toUpperCase()}</span><span>${resource.size}</span>`;
+                    clickAction = `viewDocument('${resource.id}')`;
+                    break;
+                case 'image':
+                    thumbnailContent = `<div class="resource-thumbnail" style="background-image: url('${resource.content}'); background-size: cover; background-position: center;"></div>`;
+                    metaContent = `<span>图片</span><span>${resource.size}</span>`;
+                    clickAction = `viewImage('${resource.id}')`;
+                    break;
+                case 'video':
+                    thumbnailContent = `<div class="resource-thumbnail">🎬</div>`;
+                    metaContent = `<span>视频</span><span>${resource.size}</span>`;
+                    clickAction = `viewVideo('${resource.id}')`;
+                    break;
+                case 'link':
+                    thumbnailContent = `<div class="resource-thumbnail">🔗</div>`;
+                    metaContent = `<span>链接</span><span>${resource.date}</span>`;
+                    clickAction = `openLink('${resource.id}')`;
+                    break;
+            }
+            
+            card.innerHTML = `
+                ${thumbnailContent}
+                <div class="resource-info">
+                    <h3 class="resource-title">${resource.name}</h3>
+                    <div class="resource-meta">${metaContent}</div>
+                </div>
+                <button class="delete-btn" data-id="${resource.id}">×</button>
+            `;
+            
+            // 添加点击事件
+            card.addEventListener('click', function(e) {
+                if (e.target.classList.contains('delete-btn')) return;
+                eval(clickAction);
+            });
+            
+            // 添加删除按钮事件
+            card.querySelector('.delete-btn').addEventListener('click', async function(e) {
+                e.stopPropagation();
+                if (confirm('确定要删除这个资源吗？')) {
+                    await deleteResource(resource.id, resource.type);
+                    card.remove();
+                }
+            });
+            
+            grid.appendChild(card);
+        }
+        
+        // 删除资源
+        async function deleteResource(id, type) {
+            // 从本地数据中删除
+            switch(type) {
+                case 'webpage':
+                    resources.webpages = resources.webpages.filter(r => r.id !== id);
+                    break;
+                case 'document':
+                    resources.documents = resources.documents.filter(r => r.id !== id);
+                    break;
+                case 'image':
+                case 'video':
+                    resources.media = resources.media.filter(r => r.id !== id);
+                    break;
+                case 'link':
+                    resources.links = resources.links.filter(r => r.id !== id);
+                    break;
+            }
+            
+            // 同步到GitHub
+            await saveToGitHub();
+        }
+        
+        // 获取文件图标
+        function getFileIcon(fileType) {
+            const icons = {
+                'pdf': '📕',
+                'doc': '📄',
+                'docx': '📄',
+                'ppt': '📊',
+                'pptx': '📊',
+                'txt': '📝',
+                'xls': '📊',
+                'xlsx': '📊'
+            };
+            
+            return icons[fileType.toLowerCase()] || '📁';
+        }
+        
+        // 格式化文件大小
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // 读取文件为DataURL
+        function readFileAsDataURL(file) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        // ==================== 资源查看功能 ====================
+        function viewWebpage(id) {
+            const webpage = resources.webpages.find(w => w.id === id);
+            if (webpage) {
+                window.open(webpage.content, '_blank');
+            }
+        }
+        
+        function viewDocument(id) {
+            const doc = resources.documents.find(d => d.id === id);
+            if (doc) {
+                window.open(doc.content, '_blank');
+            }
+        }
+        
+        function viewImage(id) {
+            const img = resources.media.find(m => m.id === id && m.type === 'image');
+            if (img) {
+                const viewer = window.open('', '_blank');
+                viewer.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>${img.name}</title>
+                        <style>
+                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; }
+                            img { max-width: 90vw; max-height: 90vh; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+                        </style>
+                    </head>
+                    <body>
+                        <img src="${img.content}" alt="${img.name}">
+                    </body>
+                    </html>
+                `);
+            }
+        }
+        
+        function viewVideo(id) {
+            const video = resources.media.find(m => m.id === id && m.type === 'video');
+            if (video) {
+                const viewer = window.open('', '_blank');
+                viewer.document.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>${video.name}</title>
+                        <style>
+                            body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f5f5f5; }
+                            video { max-width: 90vw; max-height: 90vh; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+                        </style>
+                    </head>
+                    <body>
+                        <video controls autoplay>
+                            <source src="${video.content}" type="${video.fileType}">
+                            您的浏览器不支持视频播放
+                        </video>
+                    </body>
+                    </html>
+                `);
+            }
+        }
+        
+        function openLink(id) {
+            const link = resources.links.find(l => l.id === id);
+            if (link) {
+                window.open(link.url, '_blank');
+            }
+        }
+        
+        // ==================== 上传处理功能 ====================
+        async function handleWebpageUpload(files) {
+            for (const file of files) {
+                if (file.name.endsWith('.html') || file.name.endsWith('.htm')) {
+                    const content = await readFileAsDataURL(file);
+                    const webpage = {
+                        id: Date.now().toString(),
+                        name: file.name.replace('.html', '').replace('.htm', ''),
+                        type: 'webpage',
+                        content: content,
+                        date: new Date().toLocaleDateString()
+                    };
+                    resources.webpages.push(webpage);
+                    await saveToGitHub();
+                    addResourceToGrid(webpage, 'webpageGrid');
+                }
+            }
+        }
+        
+        async function handleDocumentUpload(files) {
+            for (const file of files) {
+                const content = await readFileAsDataURL(file);
+                const document = {
+                    id: Date.now().toString(),
+                    type: 'document',
+                    name: file.name,
+                    content: content,
+                    size: formatFileSize(file.size),
+                    date: new Date().toLocaleDateString(),
+                    fileType: file.type || file.name.split('.').pop()
+                };
+                resources.documents.push(document);
+                await saveToGitHub();
+                addResourceToGrid(document, 'documentGrid');
+            }
+        }
+        
+        async function handleMediaUpload(files) {
+            for (const file of files) {
+                const content = await readFileAsDataURL(file);
+                const media = {
+                    id: Date.now().toString(),
+                    name: file.name,
+                    type: file.type.startsWith('image') ? 'image' : 'video',
+                    content: content,
+                    size: formatFileSize(file.size),
+                    date: new Date().toLocaleDateString(),
+                    fileType: file.type || file.name.split('.').pop()
+                };
+                resources.media.push(media);
+                await saveToGitHub();
+                addResourceToGrid(media, 'mediaGrid');
+            }
+        }
+        
+        async function addLink() {
+            const title = document.getElementById('linkTitle').value.trim();
+            const url = document.getElementById('linkUrl').value.trim();
+            
+            if (!title || !url) {
+                alert('请输入链接标题和URL');
+                return;
+            }
+            
+            if (!isValidUrl(url)) {
+                alert('请输入有效的URL (以http://或https://开头)');
+                return;
+            }
+            
+            const link = {
+                id: Date.now().toString(),
+                type: 'link',
+                name: title,
+                url: url,
+                date: new Date().toLocaleDateString()
+            };
+            
+            resources.links.push(link);
+            await saveToGitHub();
+            addResourceToGrid(link, 'linkGrid');
+            
+            // 清空输入框
+            document.getElementById('linkTitle').value = '';
+            document.getElementById('linkUrl').value = '';
+        }
+        
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;
+            }
+        }
+        
+        // ==================== 初始化 ====================
+        function setupUploadAreas() {
+            // 网页上传
+            document.getElementById('webpageInput').addEventListener('change', function() {
+                handleWebpageUpload(this.files);
+                this.value = '';
+            });
+            
+            // 文档上传
+            document.getElementById('documentInput').addEventListener('change', function() {
+                handleDocumentUpload(this.files);
+                this.value = '';
+            });
+            
+            // 媒体上传
+            document.getElementById('mediaInput').addEventListener('change', function() {
+                handleMediaUpload(this.files);
+                this.value = '';
+            });
+            
+            // 链接添加
+            document.getElementById('addLinkBtn').addEventListener('click', addLink);
+            
+            // 标签页切换
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tabId = this.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setupUploadAreas();
+            loadFromGitHub();
+        });
+    </script>
+</body>
+</html>
