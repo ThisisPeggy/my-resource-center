@@ -1,0 +1,74 @@
+{
+  "webpages": [
+    {
+      "id": "webpage-project1",
+      "name": "我的第一个网页项目",
+      "type": "webpage",
+      "content": "/webpages/project1/index.html",
+      "date": "2023-01-01"
+    },
+    {
+      "id": "webpage-project2",
+      "name": "响应式布局示例",
+      "type": "webpage",
+      "content": "/webpages/project2/index.html",
+      "date": "2023-03-15"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-syllabus",
+      "name": "课程大纲.pdf",
+      "type": "document",
+      "content": "/documents/course_syllabus.pdf",
+      "size": "1.2 MB",
+      "date": "2024-05-20",
+      "fileType": "pdf"
+    },
+    {
+      "id": "doc-notes-chapter1",
+      "name": "第一章笔记.docx",
+      "type": "document",
+      "content": "/documents/chapter1_notes.docx",
+      "size": "500 KB",
+      "date": "2024-05-22",
+      "fileType": "docx"
+    }
+  ],
+  "media": [
+    {
+      "id": "media-diagram1",
+      "name": "系统架构图.png",
+      "type": "image",
+      "content": "/media/system_architecture.png",
+      "size": "350 KB",
+      "date": "2024-05-18",
+      "fileType": "png"
+    },
+    {
+      "id": "media-lecture-intro",
+      "name": "课程介绍视频.mp4",
+      "type": "video",
+      "content": "/media/lecture_intro.mp4",
+      "size": "25.5 MB",
+      "date": "2024-05-10",
+      "fileType": "mp4"
+    }
+  ],
+  "links": [
+    {
+      "id": "link-github",
+      "name": "GitHub 官方网站",
+      "type": "link",
+      "url": "https://github.com/",
+      "date": "2023-01-01"
+    },
+    {
+      "id": "link-mooc",
+      "name": "某知名MOOC平台",
+      "type": "link",
+      "url": "https://www.coursera.org/",
+      "date": "2023-02-10"
+    }
+  ]
+}
