@@ -97,7 +97,7 @@
             text-align: center;
             margin-bottom: 20px;
             transition: all 0.3s;
-            cursor: pointer;
+            /* cursor: pointer; */ /* 移除点击功能 */
         }
         
         .upload-area:hover {
@@ -119,13 +119,15 @@
             cursor: pointer;
             transition: all 0.3s;
             font-size: 1rem;
+            opacity: 0.5; /* 按钮变灰，表示不能直接操作 */
+            cursor: not-allowed;
         }
         
         .btn:hover {
-            background-color: #3a5a80;
-            transform: translateY(-2px);
+            background-color: var(--primary); /* 禁用状态下悬停不变色 */
+            transform: none; /* 禁用状态下无动画 */
         }
-        
+
         .resource-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -139,6 +141,7 @@
             overflow: hidden;
             transition: all 0.3s;
             position: relative;
+            cursor: pointer; /* 启用卡片点击 */
         }
         
         .resource-card:hover {
@@ -154,6 +157,8 @@
             justify-content: center;
             font-size: 3rem;
             color: var(--secondary);
+            background-size: cover; /* 用于图片背景 */
+            background-position: center; /* 用于图片背景 */
         }
         
         .resource-info {
@@ -207,7 +212,8 @@
             border-radius: 50%;
             width: 25px;
             height: 25px;
-            cursor: pointer;
+            cursor: not-allowed; /* 禁用删除按钮 */
+            opacity: 0.5; /* 禁用删除按钮 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -249,6 +255,16 @@
             color: #666;
             font-size: 0.9rem;
         }
+
+        .upload-instructions {
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #555;
+            text-align: left;
+        }
+        .upload-instructions strong {
+            color: var(--primary);
+        }
     </style>
 </head>
 <body>
@@ -272,14 +288,21 @@
             <p>在这里展示你的三个网页项目</p>
             
             <div class="resource-grid" id="webpageGrid">
-                <!-- 动态添加网页项目 -->
-            </div>
+                </div>
             
             <div class="upload-area" id="webpageUpload">
                 <h3>添加网页项目</h3>
-                <p>拖放网页文件夹到这里或点击上传</p>
-                <input type="file" id="webpageInput" webkitdirectory directory multiple class="hidden">
-                <button class="btn" onclick="document.getElementById('webpageInput').click()">选择文件夹</button>
+                <p>拖放网页文件夹到这里或点击上传 (此功能已禁用，请通过 GitHub 仓库手动管理)</p>
+                <input type="file" id="webpageInput" webkitdirectory directory multiple class="hidden" disabled>
+                <button class="btn" disabled>选择文件夹</button>
+                <div class="upload-instructions">
+                    <p><strong>手动添加步骤：</strong></p>
+                    <ol>
+                        <li>将你的网页项目文件夹 (包含 `index.html` 及其他文件) 复制到 GitHub 仓库的 `/webpages/` 目录下。</li>
+                        <li>编辑你的 `resources.json` 文件，添加一个新条目，`content` 路径应指向该网页项目的主 HTML 文件，例如：`/my-resource-center/webpages/你的项目名/index.html`。</li>
+                        <li>将更改提交并推送到 GitHub 仓库的 `main` 分支。</li>
+                    </ol>
+                </div>
             </div>
         </div>
         
@@ -288,14 +311,21 @@
             <p>上传和查看课程相关的PDF、Word等文档</p>
             
             <div class="resource-grid" id="documentGrid">
-                <!-- 动态添加文档 -->
-            </div>
+                </div>
             
             <div class="upload-area" id="documentUpload">
                 <h3>上传文档</h3>
-                <p>拖放文件到这里或点击上传</p>
-                <input type="file" id="documentInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" multiple class="hidden">
-                <button class="btn" onclick="document.getElementById('documentInput').click()">选择文件</button>
+                <p>拖放文件到这里或点击上传 (此功能已禁用，请通过 GitHub 仓库手动管理)</p>
+                <input type="file" id="documentInput" accept=".pdf,.doc,.docx,.ppt,.pptx,.txt" multiple class="hidden" disabled>
+                <button class="btn" disabled>选择文件</button>
+                <div class="upload-instructions">
+                    <p><strong>手动添加步骤：</strong></p>
+                    <ol>
+                        <li>将文档文件复制到 GitHub 仓库的 `/documents/` 目录下。</li>
+                        <li>编辑你的 `resources.json` 文件，添加一个新条目，`content` 路径应指向该文档文件，例如：`/my-resource-center/documents/你的文档名.pdf`。</li>
+                        <li>将更改提交并推送到 GitHub 仓库的 `main` 分支。</li>
+                    </ol>
+                </div>
             </div>
         </div>
         
@@ -304,14 +334,21 @@
             <p>上传和查看课程相关的图片和视频</p>
             
             <div class="resource-grid" id="mediaGrid">
-                <!-- 动态添加媒体 -->
-            </div>
+                </div>
             
             <div class="upload-area" id="mediaUpload">
                 <h3>上传媒体文件</h3>
-                <p>拖放图片或视频到这里或点击上传</p>
-                <input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden">
-                <button class="btn" onclick="document.getElementById('mediaInput').click()">选择文件</button>
+                <p>拖放图片或视频到这里或点击上传 (此功能已禁用，请通过 GitHub 仓库手动管理)</p>
+                <input type="file" id="mediaInput" accept="image/*,video/*" multiple class="hidden" disabled>
+                <button class="btn" disabled>选择文件</button>
+                <div class="upload-instructions">
+                    <p><strong>手动添加步骤：</strong></p>
+                    <ol>
+                        <li>将图片或视频文件复制到 GitHub 仓库的 `/media/` 目录下。</li>
+                        <li>编辑你的 `resources.json` 文件，添加一个新条目，`content` 路径应指向该媒体文件，例如：`/my-resource-center/media/你的图片或视频名.jpg`。</li>
+                        <li>将更改提交并推送到 GitHub 仓库的 `main` 分支。</li>
+                    </ol>
+                </div>
             </div>
         </div>
         
@@ -320,23 +357,30 @@
             <p>保存和访问课程相关的重要链接</p>
             
             <div class="resource-grid" id="linkGrid">
-                <!-- 动态添加链接 -->
-            </div>
+                </div>
             
             <div class="upload-area" id="linkUpload" style="cursor: auto;">
-                <h3>添加新链接</h3>
+                <h3>添加新链接 (此功能已禁用，请通过 GitHub 仓库手动管理)</h3>
                 <div style="margin-bottom: 15px;">
-                    <input type="text" id="linkTitle" placeholder="链接标题" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                    <input type="url" id="linkUrl" placeholder="https://example.com" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                    <input type="text" id="linkTitle" placeholder="链接标题" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;" disabled>
+                    <input type="url" id="linkUrl" placeholder="https://example.com" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;" disabled>
                 </div>
-                <button class="btn" id="addLinkBtn">添加链接</button>
+                <button class="btn" id="addLinkBtn" disabled>添加链接</button>
+                <div class="upload-instructions">
+                    <p><strong>手动添加步骤：</strong></p>
+                    <ol>
+                        <li>编辑你的 `resources.json` 文件，在 `links` 数组中添加新的链接对象。</li>
+                        <li>提供 `id`、`name` (标题)、`url` 和 `date` 字段。</li>
+                        <li>将更改提交并推送到 GitHub 仓库的 `main` 分支。</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
     
     <div id="syncStatus" class="sync-status hidden">
         <div class="loading"></div>
-        <span>正在同步...</span>
+        <span>正在加载...</span>
     </div>
     
     <footer>
@@ -344,13 +388,6 @@
     </footer>
 
     <script>
-        // ==================== 配置部分 ====================
-        // 替换为你的GitHub信息
-        const GITHUB_USERNAME = "ThisisPeggy";  // 你的GitHub用户名
-        const GITHUB_REPO = "my-resource-center";           // 你的仓库名
-        const GITHUB_TOKEN = "";       // 你的GitHub个人访问令牌
-        const DATA_FILE = "resource-data.json";         // 数据文件名
-        
         // ==================== 数据对象 ====================
         let resources = {
             webpages: [],
@@ -359,7 +396,7 @@
             links: []
         };
         
-        // ==================== GitHub同步功能 ====================
+        // ==================== GitHub同步功能 (仅读取) ====================
         // 显示同步状态
         function showSyncStatus(message) {
             const status = document.getElementById('syncStatus');
@@ -372,95 +409,30 @@
             document.getElementById('syncStatus').classList.add('hidden');
         }
         
-        // 保存数据到GitHub
-        async function saveToGitHub() {
-            showSyncStatus('正在保存到GitHub...');
-            try {
-                // 1. 先尝试获取文件SHA（用于更新现有文件）
-                let sha = null;
-                try {
-                    const shaResponse = await fetch(
-                        `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${DATA_FILE}`,
-                        {
-                            headers: {
-                                "Authorization": `token ${GITHUB_TOKEN}`,
-                                "Accept": "application/vnd.github.v3+json"
-                            }
-                        }
-                    );
-                    if (shaResponse.ok) {
-                        const data = await shaResponse.json();
-                        sha = data.sha;
-                    }
-                } catch (e) {
-                    console.log("文件不存在，将创建新文件");
-                }
-        
-                // 2. 创建或更新文件
-                const response = await fetch(
-                    `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${DATA_FILE}`,
-                    {
-                        method: "PUT",
-                        headers: {
-                            "Authorization": `token ${GITHUB_TOKEN}`,
-                            "Content-Type": "application/json",
-                            "Accept": "application/vnd.github.v3+json"
-                        },
-                        body: JSON.stringify({
-                            message: "更新资源数据 - " + new Date().toLocaleString(),
-                            content: btoa(unescape(encodeURIComponent(JSON.stringify(resources)))),
-                            sha: sha
-                        })
-                    }
-                );
-                
-                if (!response.ok) {
-                    throw new Error("保存失败: " + response.status);
-                }
-                
-                console.log("数据保存成功");
-                hideSyncStatus();
-                return await response.json();
-            } catch (error) {
-                console.error("保存到GitHub失败:", error);
-                showSyncStatus('同步失败: ' + error.message);
-                setTimeout(hideSyncStatus, 3000);
-                throw error;
-            }
-        }
-        
-        // 从GitHub加载数据
+        // 从GitHub Pages加载数据
+        // 注意：这里不再使用GitHub API，而是直接从相对路径加载静态文件
         async function loadFromGitHub() {
-            showSyncStatus('正在从GitHub加载...');
+            showSyncStatus('正在加载数据...');
             try {
-                const response = await fetch(
-                    `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPO}/contents/${DATA_FILE}`,
-                    {
-                        headers: {
-                            "Authorization": `token ${GITHUB_TOKEN}`,
-                            "Accept": "application/vnd.github.v3+json"
-                        }
-                    }
-                );
+                // 直接从 GitHub Pages 提供的相对路径加载 resources.json
+                const response = await fetch('resources.json'); 
                 
                 if (!response.ok) {
                     if (response.status === 404) {
-                        console.log("数据文件不存在，将创建新文件");
-                        hideSyncStatus();
-                        return; // 首次使用时文件不存在是正常的
+                        console.warn("数据文件 resources.json 不存在。将初始化为空数据。");
+                        resources = { webpages: [], documents: [], media: [], links: [] }; // 如果文件不存在，初始化为空
+                    } else {
+                        throw new Error(`加载失败: ${response.status} - ${response.statusText}`);
                     }
-                    throw new Error("加载失败: " + response.status);
+                } else {
+                    resources = await response.json();
                 }
                 
-                const data = await response.json();
-                // GitHub返回的内容是Base64编码的
-                const decodedData = decodeURIComponent(escape(atob(data.content)));
-                resources = JSON.parse(decodedData);
                 renderResources();
                 console.log("数据加载成功");
                 hideSyncStatus();
             } catch (error) {
-                console.error("从GitHub加载失败:", error);
+                console.error("从 GitHub Pages 加载数据失败:", error);
                 showSyncStatus('加载失败: ' + error.message);
                 setTimeout(hideSyncStatus, 3000);
             }
@@ -493,34 +465,36 @@
             
             let thumbnailContent = '';
             let metaContent = '';
-            let clickAction = '';
             
+            // 使用 switch 结构来确定点击事件
+            let cardClickHandler;
+
             switch(resource.type) {
                 case 'webpage':
                     thumbnailContent = `<div class="resource-thumbnail">📄</div>`;
                     metaContent = `<span>网页</span><span>${resource.date}</span>`;
-                    clickAction = `viewWebpage('${resource.id}')`;
+                    cardClickHandler = () => viewWebpage(resource.id);
                     break;
                 case 'document':
                     const docIcon = getFileIcon(resource.fileType);
                     thumbnailContent = `<div class="resource-thumbnail">${docIcon}</div>`;
-                    metaContent = `<span>${resource.fileType.toUpperCase()}</span><span>${resource.size}</span>`;
-                    clickAction = `viewDocument('${resource.id}')`;
+                    metaContent = `<span>${(resource.fileType || '').toUpperCase()}</span><span>${resource.size || ''}</span>`;
+                    cardClickHandler = () => viewDocument(resource.id);
                     break;
                 case 'image':
-                    thumbnailContent = `<div class="resource-thumbnail" style="background-image: url('${resource.content}'); background-size: cover; background-position: center;"></div>`;
-                    metaContent = `<span>图片</span><span>${resource.size}</span>`;
-                    clickAction = `viewImage('${resource.id}')`;
+                    thumbnailContent = `<div class="resource-thumbnail" style="background-image: url('${resource.content}');"></div>`;
+                    metaContent = `<span>图片</span><span>${resource.size || ''}</span>`;
+                    cardClickHandler = () => viewImage(resource.id);
                     break;
                 case 'video':
                     thumbnailContent = `<div class="resource-thumbnail">🎬</div>`;
-                    metaContent = `<span>视频</span><span>${resource.size}</span>`;
-                    clickAction = `viewVideo('${resource.id}')`;
+                    metaContent = `<span>视频</span><span>${resource.size || ''}</span>`;
+                    cardClickHandler = () => viewVideo(resource.id);
                     break;
                 case 'link':
                     thumbnailContent = `<div class="resource-thumbnail">🔗</div>`;
                     metaContent = `<span>链接</span><span>${resource.date}</span>`;
-                    clickAction = `openLink('${resource.id}')`;
+                    cardClickHandler = () => openLink(resource.id);
                     break;
             }
             
@@ -530,48 +504,24 @@
                     <h3 class="resource-title">${resource.name}</h3>
                     <div class="resource-meta">${metaContent}</div>
                 </div>
-                <button class="delete-btn" data-id="${resource.id}">×</button>
+                <button class="delete-btn" data-id="${resource.id}" title="请手动删除">×</button>
             `;
             
-            // 添加点击事件
+            // 添加点击事件 (调用具体的函数，而不是 eval)
             card.addEventListener('click', function(e) {
-                if (e.target.classList.contains('delete-btn')) return;
-                eval(clickAction);
-            });
-            
-            // 添加删除按钮事件
-            card.querySelector('.delete-btn').addEventListener('click', async function(e) {
-                e.stopPropagation();
-                if (confirm('确定要删除这个资源吗？')) {
-                    await deleteResource(resource.id, resource.type);
-                    card.remove();
+                if (e.target.classList.contains('delete-btn')) return; // 避免点击删除按钮时触发
+                if (cardClickHandler) {
+                    cardClickHandler();
                 }
             });
             
-            grid.appendChild(card);
-        }
-        
-        // 删除资源
-        async function deleteResource(id, type) {
-            // 从本地数据中删除
-            switch(type) {
-                case 'webpage':
-                    resources.webpages = resources.webpages.filter(r => r.id !== id);
-                    break;
-                case 'document':
-                    resources.documents = resources.documents.filter(r => r.id !== id);
-                    break;
-                case 'image':
-                case 'video':
-                    resources.media = resources.media.filter(r => r.id !== id);
-                    break;
-                case 'link':
-                    resources.links = resources.links.filter(r => r.id !== id);
-                    break;
-            }
+            // 删除按钮（现在是禁用状态，仅作提示）
+            card.querySelector('.delete-btn').addEventListener('click', function(e) {
+                e.stopPropagation(); // 阻止事件冒泡到卡片点击
+                alert('要删除资源，请手动编辑 GitHub 仓库中的 `resources.json` 文件并提交更改。');
+            });
             
-            // 同步到GitHub
-            await saveToGitHub();
+            grid.appendChild(card);
         }
         
         // 获取文件图标
@@ -584,13 +534,17 @@
                 'pptx': '📊',
                 'txt': '📝',
                 'xls': '📊',
-                'xlsx': '📊'
+                'xlsx': '📊',
+                'zip': '📦',
+                'rar': '📦'
             };
             
-            return icons[fileType.toLowerCase()] || '📁';
+            // 尝试从 fileType 中获取扩展名，如果 fileType 是 mime 类型 (e.g., application/pdf)
+            const ext = fileType ? fileType.split('/').pop().split('.').pop() : '';
+            return icons[ext.toLowerCase()] || '📁'; // 默认图标
         }
         
-        // 格式化文件大小
+        // 格式化文件大小 (如果需要，从 resources.json 中读取)
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -599,33 +553,30 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
         
-        // 读取文件为DataURL
-        function readFileAsDataURL(file) {
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (e) => resolve(e.target.result);
-                reader.readAsDataURL(file);
-            });
-        }
-        
         // ==================== 资源查看功能 ====================
+        // 这些函数直接打开 content (即文件路径) 或 url
         function viewWebpage(id) {
             const webpage = resources.webpages.find(w => w.id === id);
-            if (webpage) {
+            if (webpage && webpage.content) {
                 window.open(webpage.content, '_blank');
+            } else {
+                alert('网页项目路径无效。');
             }
         }
         
         function viewDocument(id) {
             const doc = resources.documents.find(d => d.id === id);
-            if (doc) {
+            if (doc && doc.content) {
                 window.open(doc.content, '_blank');
+            } else {
+                alert('文档路径无效。');
             }
         }
         
         function viewImage(id) {
             const img = resources.media.find(m => m.id === id && m.type === 'image');
-            if (img) {
+            if (img && img.content) {
+                // 直接在新窗口打开图片
                 const viewer = window.open('', '_blank');
                 viewer.document.write(`
                     <!DOCTYPE html>
@@ -642,12 +593,16 @@
                     </body>
                     </html>
                 `);
+                viewer.document.close();
+            } else {
+                alert('图片路径无效。');
             }
         }
         
         function viewVideo(id) {
             const video = resources.media.find(m => m.id === id && m.type === 'video');
-            if (video) {
+            if (video && video.content) {
+                // 直接在新窗口打开视频
                 const viewer = window.open('', '_blank');
                 viewer.document.write(`
                     <!DOCTYPE html>
@@ -661,140 +616,29 @@
                     </head>
                     <body>
                         <video controls autoplay>
-                            <source src="${video.content}" type="${video.fileType}">
-                            您的浏览器不支持视频播放
+                            <source src="${video.content}" type="${video.fileType || 'video/mp4'}">
+                            您的浏览器不支持视频播放。
                         </video>
                     </body>
                     </html>
                 `);
+                viewer.document.close();
+            } else {
+                alert('视频路径无效。');
             }
         }
         
         function openLink(id) {
             const link = resources.links.find(l => l.id === id);
-            if (link) {
+            if (link && link.url) {
                 window.open(link.url, '_blank');
-            }
-        }
-        
-        // ==================== 上传处理功能 ====================
-        async function handleWebpageUpload(files) {
-            for (const file of files) {
-                if (file.name.endsWith('.html') || file.name.endsWith('.htm')) {
-                    const content = await readFileAsDataURL(file);
-                    const webpage = {
-                        id: Date.now().toString(),
-                        name: file.name.replace('.html', '').replace('.htm', ''),
-                        type: 'webpage',
-                        content: content,
-                        date: new Date().toLocaleDateString()
-                    };
-                    resources.webpages.push(webpage);
-                    await saveToGitHub();
-                    addResourceToGrid(webpage, 'webpageGrid');
-                }
-            }
-        }
-        
-        async function handleDocumentUpload(files) {
-            for (const file of files) {
-                const content = await readFileAsDataURL(file);
-                const document = {
-                    id: Date.now().toString(),
-                    type: 'document',
-                    name: file.name,
-                    content: content,
-                    size: formatFileSize(file.size),
-                    date: new Date().toLocaleDateString(),
-                    fileType: file.type || file.name.split('.').pop()
-                };
-                resources.documents.push(document);
-                await saveToGitHub();
-                addResourceToGrid(document, 'documentGrid');
-            }
-        }
-        
-        async function handleMediaUpload(files) {
-            for (const file of files) {
-                const content = await readFileAsDataURL(file);
-                const media = {
-                    id: Date.now().toString(),
-                    name: file.name,
-                    type: file.type.startsWith('image') ? 'image' : 'video',
-                    content: content,
-                    size: formatFileSize(file.size),
-                    date: new Date().toLocaleDateString(),
-                    fileType: file.type || file.name.split('.').pop()
-                };
-                resources.media.push(media);
-                await saveToGitHub();
-                addResourceToGrid(media, 'mediaGrid');
-            }
-        }
-        
-        async function addLink() {
-            const title = document.getElementById('linkTitle').value.trim();
-            const url = document.getElementById('linkUrl').value.trim();
-            
-            if (!title || !url) {
-                alert('请输入链接标题和URL');
-                return;
-            }
-            
-            if (!isValidUrl(url)) {
-                alert('请输入有效的URL (以http://或https://开头)');
-                return;
-            }
-            
-            const link = {
-                id: Date.now().toString(),
-                type: 'link',
-                name: title,
-                url: url,
-                date: new Date().toLocaleDateString()
-            };
-            
-            resources.links.push(link);
-            await saveToGitHub();
-            addResourceToGrid(link, 'linkGrid');
-            
-            // 清空输入框
-            document.getElementById('linkTitle').value = '';
-            document.getElementById('linkUrl').value = '';
-        }
-        
-        function isValidUrl(string) {
-            try {
-                new URL(string);
-                return true;
-            } catch (_) {
-                return false;
+            } else {
+                alert('链接地址无效。');
             }
         }
         
         // ==================== 初始化 ====================
-        function setupUploadAreas() {
-            // 网页上传
-            document.getElementById('webpageInput').addEventListener('change', function() {
-                handleWebpageUpload(this.files);
-                this.value = '';
-            });
-            
-            // 文档上传
-            document.getElementById('documentInput').addEventListener('change', function() {
-                handleDocumentUpload(this.files);
-                this.value = '';
-            });
-            
-            // 媒体上传
-            document.getElementById('mediaInput').addEventListener('change', function() {
-                handleMediaUpload(this.files);
-                this.value = '';
-            });
-            
-            // 链接添加
-            document.getElementById('addLinkBtn').addEventListener('click', addLink);
-            
+        function setupUI() {
             // 标签页切换
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('click', function() {
@@ -808,12 +652,20 @@
                     document.getElementById(tabId).classList.add('active');
                 });
             });
+
+            // 禁用所有“上传”相关的输入框和按钮，并添加提示
+            document.querySelectorAll('.upload-area input[type="file"], .upload-area input[type="text"], .upload-area input[type="url"], .upload-area button.btn').forEach(element => {
+                element.disabled = true;
+                if (element.tagName === 'BUTTON') {
+                    element.title = '此功能已禁用，请通过 GitHub 仓库手动管理';
+                }
+            });
         }
         
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
-            setupUploadAreas();
-            loadFromGitHub();
+            setupUI(); // 设置UI，包括禁用上传
+            loadFromGitHub(); // 从 GitHub Pages 加载数据
         });
     </script>
 </body>
